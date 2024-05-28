@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "rabbit-celery"
+version = "0.1.0"
+description = ""
+authors = ["tiaz0128 <tiaz0128.dev@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+celery = "^5.4.0"
+pika = "^1.3.2"
+python-dotenv = "^1.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+black = "^24.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
