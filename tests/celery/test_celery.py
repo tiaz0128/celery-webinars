@@ -10,4 +10,5 @@ class TestCelery:
         pass
 
     def test_celery_add_task(self):
-        add.delay(4, 4)
+        result = add.delay(4, 4)
+        logging.info(result.successful())

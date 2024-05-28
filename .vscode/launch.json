@@ -13,6 +13,8 @@
                 "-A",
                 "run",
                 "worker",
+                "-Q",
+                "task_queue",
                 "--loglevel=info",
                 "--logfile=./logs/celery.log"],
         }

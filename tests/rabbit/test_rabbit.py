@@ -1,4 +1,7 @@
+import json
 import logging
+from uuid import uuid4
+import pika
 import pytest
 from pika.adapters.blocking_connection import BlockingChannel
 
@@ -31,3 +34,28 @@ class TestRabbitMQ:
 
     def callback(self, ch, method, properties, body):
         logging.info(f" [x] Received {body}")
+
+    def test_rabbit_consume_task(self):
+        self.channel.queue_declare(queue="task_queue", durable=True)
+
+        # Create a message
+        message = json.dumps(
+            {
+                "id": str(uuid4()),
+                "task": "app.tasks.add.add",
+                "args": [40, 50],
+            }
+        )
+
+        # Send the message
+        self.channel.basic_publish(
+            exchange="",
+            routing_key="task_queue",
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+                content_encoding="utf-8",
+                content_type="application/json",
+            ),
+        )
+        print(" [x] Sent 'add task'")
