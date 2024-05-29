@@ -1,11 +1,10 @@
 import logging
-
 import random
 from time import sleep
+
 from run import app
 
 from celery.exceptions import Reject
-import logging
 
 
 @app.task(queue="scheduler_queue")
@@ -35,9 +34,9 @@ def raise_error_add(self, x, y):
         raise Reject(e, requeue=True)
 
 
-@app.task(queue="db_select", bind=True, acks_late=True)
-def db_select(self):
-    # 처리 시간 시뮬레이션
-    sleep(10)
+# @app.task(queue="db_select", bind=True, acks_late=True)
+# def db_select(self):
+#     # 처리 시간 시뮬레이션
+#     sleep(10)
 
-    return random.randint(1, 100) + random.randint(1, 100)
+#     return random.randint(1, 100) + random.randint(1, 100)

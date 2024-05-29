@@ -14,7 +14,7 @@
                 "run",
                 "worker",
                 "-Q",
-                "scheduler_queue,task_queue,db_select",
+                "scheduler_queue,task_queue,db_queue",
                 "--loglevel=info",
                 "--logfile=./logs/celery_worker.log"],
         },        
