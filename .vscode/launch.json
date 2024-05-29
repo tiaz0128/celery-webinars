@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Module",
+            "name": "Celery Worker",
             "type": "debugpy",
             "request": "launch",
             "module": "celery",
@@ -14,9 +14,21 @@
                 "run",
                 "worker",
                 "-Q",
-                "task_queue",
+                "scheduler_queue,task_queue,db_select",
                 "--loglevel=info",
-                "--logfile=./logs/celery.log"],
+                "--logfile=./logs/celery_worker.log"],
+        },        
+        {
+            "name": "Celery Beat",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "args": [
+                "-A",
+                "run",
+                "beat",
+                "--loglevel=info",
+                "--logfile=./logs/celery_beat.log"],
         }
     ]
 }
