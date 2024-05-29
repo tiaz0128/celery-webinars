@@ -40,5 +40,4 @@ def db_select(self):
     # 처리 시간 시뮬레이션
     sleep(10)
 
-    # 랜덤하게 예외 발생
-    return "DB Connect TEST"
+    return random.randint(1, 100) + random.randint(1, 100)
