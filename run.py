@@ -8,7 +8,7 @@ app.config_from_object("app.celeryconfig")
 app.conf.beat_schedule = {
     "add-every-seconds": {
         "task": "app.tasks.user.schedule_user_add_task",
-        "schedule": 30,  # crontab(minute=10),  # 매 10분마다 실행
+        "schedule": 5,  # crontab(minute=10),  # 매 10분마다 실행
     },
 }
 
