@@ -1,14 +1,19 @@
 from celery import Celery
 from celery.beat import crontab
 
-app = Celery("worker Celery", include=["app.tasks.add", "app.tasks.user"])
-app.config_from_object("app.celeryconfig")
+app = Celery(
+    "worker Celery",
+    include=[
+        "app.tasks.browser",
+    ],
+)
+app.config_from_object("app.celery_config")
 
 # task 함수 주기 설정
 app.conf.beat_schedule = {
     "add-every-seconds": {
-        "task": "app.tasks.user.schedule_user_add_task",
-        "schedule": 30,  # crontab(minute=10),  # 매 10분마다 실행
+        "task": "app.tasks.beat.schedule_today_events",
+        "schedule": 30,  # crontab(hour=0, minute=0),  # 자정마다
     },
 }
 

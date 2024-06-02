@@ -15,7 +15,7 @@ result_backend = "rpc://"
 task_serializer = "json"
 accept_content = ["json"]
 result_serializer = "json"
-timezone = "UTC"
+timezone = "Asia/Seoul"
 enable_utc = True
 broker_connection_retry_on_startup = True
 
