@@ -88,7 +88,6 @@ def get_webinar_url(event):
 def is_webinar(start, location):
     tz = timezone("Asia/Seoul")
 
-    return location == "BrightTALK" 
     return location == "BrightTALK" and start.startswith(
         datetime.now(tz).strftime("%Y-%m-%d")
     )
