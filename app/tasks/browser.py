@@ -7,8 +7,13 @@ from playwright.sync_api import Browser, sync_playwright, expect
 
 
 @app.task(queue="work-page")
-def work_page(url: str, id: str, pw: str) -> Literal["Success", "Fail"]:
-    logging.info(f"{url=}, {id=}, {pw=}")
+def work_page(
+    url: str,
+    id: str,
+    pw: str,
+    elapsed_time: str,
+) -> Literal["Success", "Fail"]:
+    logging.info(f"{url=}, {id=}, {pw=}, {elapsed_time=}")
 
     with sync_playwright() as p:
         try:
@@ -17,10 +22,11 @@ def work_page(url: str, id: str, pw: str) -> Literal["Success", "Fail"]:
             isc2 = Isc2Page(browser)
 
             isc2.login_page(id, pw)
-            isc2.visit_watching_page(url)
+            isc2.visit_watching_page(url, elapsed_time)
 
             return "Success"
         except Exception as e:
+            logging.info(f"Fail: {e}")
             return "Fail"
         finally:
             isc2.close()
@@ -56,7 +62,7 @@ class Isc2Page:
         # context = browser.new_context()
         # context.storage_state(path=".temp/isc2-session.json")
 
-    def visit_watching_page(self, url):
+    def visit_watching_page(self, url, elapsed_time):
         self.page.goto(url)
 
         self.page.wait_for_selector("#onetrust-accept-btn-handler")
@@ -64,16 +70,19 @@ class Isc2Page:
 
         self.page.wait_for_timeout(10000)
 
-        # scroll bottom
-        sitemap = self.page.get_by_role("link", name="Sitemap")
-        expect(sitemap).to_be_visible()
-        sitemap.scroll_into_view_if_needed()
+        self.page.mouse.wheel(0, 500)
+        self.page.mouse.wheel(0, 500)
+        self.page.wait_for_timeout(1000)
 
-        self.page.pause()
+        # scroll bottom
+        # sitemap = self.page.get_by_role("link", name="Sitemap")
+        # expect(sitemap).to_be_visible()
+        # sitemap.scroll_into_view_if_needed()
+
         watch = self.page.frame_locator("#bt-player-wrapper-iframe").get_by_role(
             "button",
-            name="Register",
             # name="Watch",
+            name="Register",
         )
         expect(watch).to_be_visible()
         watch.scroll_into_view_if_needed()
@@ -81,6 +90,9 @@ class Isc2Page:
 
         logging.info(f"Watching...")
 
-        self.page.wait_for_timeout(5000)
+        self.page.wait_for_timeout(int(elapsed_time) * 1000)
 
         logging.info(f"Done watching...")
+
+        # 디버깅
+        # self.page.pause()

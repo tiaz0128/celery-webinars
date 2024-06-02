@@ -1,7 +1,7 @@
 import logging
 import pytest
 
-from app.tasks.add import add
+from app.tasks._back.add import add
 
 
 class TestCelery:

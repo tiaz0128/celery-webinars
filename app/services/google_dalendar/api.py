@@ -50,6 +50,8 @@ def get_today_events(user_email):
 
         for event in events:
             start = event["start"].get("dateTime", event["start"].get("date"))
+            end = event["end"].get("dateTime", event["end"].get("date"))
+
             location = event.get("location")
 
             # 오늘 00:00:00 부터 시작하는 BrightTALK 이벤트만 추출
@@ -65,11 +67,15 @@ def get_today_events(user_email):
                     logging.info(event["summary"])
                     logging.info(url)
 
-                    return start, url
+                    elapsed_time = datetime.fromisoformat(end) - datetime.fromisoformat(
+                        start
+                    )
+
+                    return start, url, elapsed_time.total_seconds()
 
         logging.info("No match Event")
-        return None, None
+        return None
 
     except HttpError as error:
         logging.error(f"An error occurred: {error}")
-        return None, None
+        return None
