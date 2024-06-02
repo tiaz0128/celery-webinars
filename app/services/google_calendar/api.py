@@ -56,26 +56,39 @@ def get_today_events(user_email):
             location = event.get("location")
 
             # 오늘 00:00:00 부터 시작하는 BrightTALK 이벤트만 추출
-            if location == "BrightTALK":
-                # and start.startswith(datetime.now().strftime("%Y-%m-%d")):
+            if is_webinar(start, location):
+                url = get_webinar_url(event)
 
-                # 정규 표현식을 사용하여 첫 번째 https부터 \n\n 이전까지 추출
-                pattern = r"https[^\n]+"
-                match = re.search(pattern, event["description"])
-                if match:
-                    url = match.group()
-                    logging.info(start)
-                    logging.info(event["summary"])
-                    logging.info(url)
+                elapsed_time = datetime.fromisoformat(end) - datetime.fromisoformat(
+                    start
+                )
 
-                    elapsed_time = datetime.fromisoformat(end) - datetime.fromisoformat(
-                        start
-                    )
+                logging.info(f"[webinar {len(webinars) + 1}]")
+                logging.info(f"\t\t{start}")
+                logging.info(f"\t\t{event["summary"]}")
+                logging.info(f"\t\t{url}")
 
-                    webinars.append((start, url, elapsed_time.total_seconds()))
+                webinars.append((start, url, elapsed_time.total_seconds()))
 
         return webinars
 
     except HttpError as error:
         logging.error(f"An error occurred: {error}")
         return []
+
+
+def get_webinar_url(event):
+    # 첫 번째 https부터 \n\n 이전까지 추출
+    pattern = r"https[^\n]+"
+    match = re.search(pattern, event["description"])
+
+    return match.group()
+
+
+def is_webinar(start, location):
+    tz = timezone("Asia/Seoul")
+
+    return location == "BrightTALK" 
+    return location == "BrightTALK" and start.startswith(
+        datetime.now(tz).strftime("%Y-%m-%d")
+    )
