@@ -1,19 +1,23 @@
 import logging
 from typing import Literal
 
+import os
+from dotenv import load_dotenv
+
+
 from run import app
 
 from playwright.sync_api import Browser, sync_playwright, expect
 
+load_dotenv()
+
 
 @app.task(queue="work-page")
-def work_page(
-    url: str,
-    id: str,
-    pw: str,
-    elapsed_time: str,
-) -> Literal["Success", "Fail"]:
-    logging.info(f"{url=}, {id=}, {pw=}, {elapsed_time=}")
+def work_page(url: str, elapsed_time: str) -> Literal["Success", "Fail"]:
+    logging.info(f"{url=}, {elapsed_time=}")
+
+    id = os.getenv("ISC2_USERNAME")
+    pw = os.getenv("ISC2_PASSWORD")
 
     with sync_playwright() as p:
         try:

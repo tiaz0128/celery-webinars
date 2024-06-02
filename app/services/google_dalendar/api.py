@@ -21,6 +21,7 @@ def get_credentials(scopes):
 
 def get_today_events(user_email):
     creds = get_credentials(SCOPES)
+    webinars = []
 
     try:
         service = build("calendar", "v3", credentials=creds)
@@ -46,7 +47,7 @@ def get_today_events(user_email):
 
         if not events:
             logging.info("No upcoming events found.")
-            return None, None
+            return []
 
         for event in events:
             start = event["start"].get("dateTime", event["start"].get("date"))
@@ -71,11 +72,10 @@ def get_today_events(user_email):
                         start
                     )
 
-                    return start, url, elapsed_time.total_seconds()
+                    webinars.append((start, url, elapsed_time.total_seconds()))
 
-        logging.info("No match Event")
-        return None
+        return webinars
 
     except HttpError as error:
         logging.error(f"An error occurred: {error}")
-        return None
+        return []
