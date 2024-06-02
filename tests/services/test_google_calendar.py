@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from pytz import timezone
 
-from app.services.google_dalendar.api import get_today_events
-from app.services.google_dalendar.token import refresh_token
+from app.services.google_calendar.api import get_today_events
+from app.services.google_calendar.token import refresh_token
 from app.tasks.browser import work_page
 
 load_dotenv()
