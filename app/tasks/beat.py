@@ -7,7 +7,7 @@ from app.services.google_calendar.api import get_today_webinars
 from app.tasks.browser import run_web_page_task
 
 
-@app.task
+@app.task(queue="webinars-beat")
 def schedule_today_webinars():
     user_email = os.getenv("GOOGLE_CALENDAR_USER_EMAIL")
     webinars = get_today_webinars(user_email)
@@ -23,3 +23,5 @@ def schedule_today_webinars():
             eta=eta_time,
             expires=expires_time,
         )
+
+    return "Success"
