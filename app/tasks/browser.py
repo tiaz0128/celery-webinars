@@ -12,8 +12,8 @@ from playwright.sync_api import Browser, sync_playwright, expect
 load_dotenv()
 
 
-@app.task(queue="work-page")
-def work_page(url: str, elapsed_time: str) -> Literal["Success", "Fail"]:
+@app.task(queue="webinars")
+def run_web_page_task(url: str, elapsed_time: str) -> Literal["Success", "Fail"]:
     logging.info(f"{url=}, {elapsed_time=}")
 
     id = os.getenv("ISC2_USERNAME")

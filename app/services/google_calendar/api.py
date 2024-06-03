@@ -19,7 +19,7 @@ def get_credentials(scopes):
     return Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
 
 
-def get_today_events(user_email):
+def get_today_webinars(user_email):
     creds = get_credentials(SCOPES)
     webinars = []
 

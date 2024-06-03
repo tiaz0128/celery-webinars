@@ -37,7 +37,7 @@ poetry install
 
 celery -A run beat --loglevel=info --logfile=./logs/celery_beat.log
 
-celery -A run worker -Q work-page --loglevel=info --logfile=./logs/celery_worker.log
+celery -A run worker -Q webinars --loglevel=info --logfile=./logs/celery_worker.log
 ```
 
 ### /etc/systemd/system/celery_beat.service
@@ -70,7 +70,7 @@ After=network.target
 User=ubuntu
 Group=ubuntu
 WorkingDirectory=/home/ubuntu/rabbit-celery
-ExecStart=/home/ubuntu/rabbit-celery/.venv/bin/celery -A run worker -Q work-page --loglevel=info --logfile=./logs/celery_worker.log
+ExecStart=/home/ubuntu/rabbit-celery/.venv/bin/celery -A run worker -Q webinars --loglevel=info --logfile=./logs/celery_worker.log
 Restart=always
 
 [Install]
