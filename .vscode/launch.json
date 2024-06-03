@@ -14,7 +14,7 @@
                 "run",
                 "worker",
                 "-Q",
-                "work-page",
+                "celery-beat,work-page",
                 "--loglevel=info",
                 "--logfile=./logs/test_celery_worker.log"],
         },        
