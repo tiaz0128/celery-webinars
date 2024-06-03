@@ -18,10 +18,13 @@ COPY pyproject.toml poetry.lock ./
 RUN pip install poetry && poetry config virtualenvs.create false && poetry install --no-dev
 
 # playwright 설치
-RUN apt-get update && apt-get install -y wget && wget -qO- https://playwright.dev/cli/install.sh | sh
+RUN playwright install-deps
+RUN playwright install
 
 # 애플리케이션 코드를 복사합니다.
 COPY . .
 
+RUN chmod +x scripts/wait-for-it.sh
+
 # Celery worker를 실행합니다.
-CMD ["celery", "-A", "run", "worker", "-Q", "webinars-beat,webinars", "--loglevel=info", "--logfile=./logs/celery_worker.log"]
+CMD ["scripts/wait-for-it.sh", "rabbitmq:5672", "--", "celery", "-A", "run", "worker", "-Q", "webinars-beat,webinars", "--loglevel=info", "--logfile=./logs/celery_worker.log"]

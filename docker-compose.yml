@@ -8,16 +8,19 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: 1234qwer!
 
   celery-worker:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: celery-worker
-    command: celery -A run worker -Q webinars-beat,webinars --loglevel=info --logfile=./logs/celery_worker.log
+    command: 
+      scripts/wait-for-it.sh rabbitmq:5672 -- celery -A run worker -Q webinars-beat,webinars --loglevel=info --logfile=./logs/celery_worker.log
     volumes:
       - .:/app
     depends_on:
       - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
