@@ -22,7 +22,15 @@
 ## 설치
 
 - Python 3.12
+- playwright 설치 필요
 - 의존성 관리는 Poetry를 사용
+- Celery Beat & Worker daemon 등록
+
+```sh
+sudo playwright install-deps
+
+playwright install
+```
 
 ```sh
 poetry install
@@ -30,6 +38,50 @@ poetry install
 celery -A run beat --loglevel=info --logfile=./logs/celery_beat.log
 
 celery -A run worker -Q work-page --loglevel=info --logfile=./logs/celery_worker.log
+```
+
+### /etc/systemd/system/celery_beat.service
+
+```sh
+[Unit]
+Description=Celery Beat
+After=network.target
+Requires=celery_worker.service
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/rabbit-celery
+ExecStart=/home/ubuntu/rabbit-celery/.venv/bin/celery -A run beat --loglevel=info --logfile=./logs/celery_beat.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### /etc/systemd/system/celery_worker.service
+
+```sh
+[Unit]
+Description=Celery Worker
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/rabbit-celery
+ExecStart=/home/ubuntu/rabbit-celery/.venv/bin/celery -A run worker -Q work-page --loglevel=info --logfile=./logs/celery_worker.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+sudo systemctl daemon-reload
+
+sudo systemctl start celery_beat.service
+sudo systemctl start celery_worker.service
 ```
 
 <br/>

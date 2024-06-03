@@ -16,7 +16,7 @@
                 "-Q",
                 "work-page",
                 "--loglevel=info",
-                "--logfile=./logs/celery_worker.log"],
+                "--logfile=./logs/test_celery_worker.log"],
         },        
         {
             "name": "Celery Beat",
@@ -28,7 +28,7 @@
                 "run",
                 "beat",
                 "--loglevel=info",
-                "--logfile=./logs/celery_beat.log"],
+                "--logfile=./logs/test_celery_beat.log"],
         }
     ]
 }
