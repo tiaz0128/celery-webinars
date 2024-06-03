@@ -14,9 +14,9 @@ app.config_from_object("app.celery_config")
 app.conf.beat_schedule = {
     "add-every-seconds": {
         "task": "app.tasks.beat.schedule_today_events",
-        # "schedule": crontab(hour=0, minute=0),  # 자정마다
-        "schedule": 10,  # 30초마다
-        "options": {"queue": "celery-beat"},  # 특정 큐 지정
+        "schedule": crontab(hour=0, minute=0),  # 자정마다
+        # "schedule": 10,  # 30초마다
+        "options": {"queue": "schedule-today-events"},  # 특정 큐 지정
     },
 }
 
