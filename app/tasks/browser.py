@@ -85,7 +85,7 @@ class Isc2Page:
 
         watch = self.page.frame_locator("#bt-player-wrapper-iframe").get_by_role(
             "button",
-            name="Watch",
+            name="Enter",
             # name="Register",
         )
         expect(watch).to_be_visible()
