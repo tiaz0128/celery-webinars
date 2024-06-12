@@ -13,6 +13,8 @@
                 "-A",
                 "run",
                 "worker",
+                "-c",
+                "4",
                 "-Q",
                 "webinars-beat,webinars",
                 "--loglevel=info",
