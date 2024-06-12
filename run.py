@@ -14,8 +14,8 @@ app.config_from_object("app.celery_config")
 app.conf.beat_schedule = {
     "add-every-seconds": {
         "task": "app.tasks.beat.schedule_today_webinars",
-        # "schedule": crontab(hour=0, minute=0),  # 자정마다
-        "schedule": 30,  # 30초마다
+        "schedule": crontab(minute=0),  # 매 시간마다
+        # "schedule": 30,  # 30초마다
     },
 }
 

@@ -103,3 +103,51 @@ sudo systemctl start celery_worker.service
 
 - Celery Worker: 비동기 작업 큐를 처리
 - playwright : chromium 을 통해 webinar 시청
+
+## Error : RabbitMQ Timeout
+
+```text
+[2024-06-12 08:40:59,524: CRITICAL/MainProcess] Unrecoverable error: PreconditionFailed(406, 'PRECONDITION_FAILED - delivery acknowledgement on channel 1 timed out. Timeout value used: 1800000 ms. This timeout value can be configured, see consumers doc guide to learn more', (0, 0), '')
+```
+
+- 0시에 작업을 스케줄링 해놓고 약 23시간 후에 실행되는 웹비니가 존재
+- 큐에서 task를 제대로 가져왔지만
+- RabbitMQ 에서 `delivery acknowledgement on channel 1 timed out` 에러 처리
+- task가 실패
+- [참고](https://docs.celeryq.dev/en/stable/userguide/calling.html#calling-eta)
+
+## 원인 : consumer_timeout
+
+- RabbitMQ 에서 `consumer_timeout` 라는 설정이 존재
+- RabbitMQ에서 메시지를 수신한 소비자가 지정된 시간 내에 메시지를 확인하지 않으면 해당 채널이 닫힘
+- 기본 값은 `1800000 ms` = 30분
+- 메시지가 큐로 반환되는 시간 제한을 지정
+- 이 타임아웃 값은 밀리초 단위로 설정
+- [tick 간격이 최소 60000 ms = 1분 이기 때문에 1분 이상의 시간을 설정해야 한다.](https://stackoverflow.com/questions/70957962/rabbitmq-consumer-timeout-behavior-not-working-as-expected)
+
+## 해결 : consumer_timeout 늘리기
+
+- 자정마다 가져 beat 스케줄 작업을 매 시간마다 동작하게 변경
+- rabbitmq.conf 파일 생성
+- 10800000 = 3시간으로 설정
+- docker-compose.yml 에 추가
+
+```python
+# task 함수 주기 설정
+app.conf.beat_schedule = {
+    "add-every-seconds": {
+        "task": "app.tasks.beat.schedule_today_webinars",
+        "schedule": crontab(minute=0),  # 매 시간마다
+    },
+}
+```
+
+```ini
+# 3 hours
+consumer_timeout = 10800000
+```
+
+```yml
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+```

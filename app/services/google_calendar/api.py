@@ -89,5 +89,5 @@ def is_webinar(start, location):
     tz = timezone("Asia/Seoul")
 
     return location == "BrightTALK" and start.startswith(
-        datetime.now(tz).strftime("%Y-%m-%d")
+        datetime.now(tz).strftime("%Y-%m-%d %H")
     )
