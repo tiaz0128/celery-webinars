@@ -16,4 +16,7 @@ COPY ./.temp/ /worker/.temp/
 COPY ./app/ /worker/app/
 RUN mkdir -p /worker/logs /worker/.temp
 
+RUN playwright install
+RUN playwright install-deps
+
 CMD ["celery", "-A", "run", "worker", "-Q", "webinars-beat,webinars", "--hostname", "worker@%h", "-c", "4", "--loglevel=info"]
