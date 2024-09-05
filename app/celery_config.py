@@ -4,15 +4,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-RABBITMQ_HOST = os.getenv("RABBITMQ_HOST")
+RABBITMQ_URL = os.getenv("RABBITMQ_URL")
 RABBITMQ_DEFAULT_USER = os.getenv("RABBITMQ_DEFAULT_USER")
 RABBITMQ_DEFAULT_PASS = os.getenv("RABBITMQ_DEFAULT_PASS")
 
 
-broker_url = (
-    f"pyamqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@{RABBITMQ_HOST}//"
-)
-result_backend = "rpc://"
+broker_url = f"pyamqp://{RABBITMQ_DEFAULT_USER}:{RABBITMQ_DEFAULT_PASS}@{RABBITMQ_URL}/"
+result_backend = f"redis://{os.environ.get('REDIS_URL')}:6379/0"
 
 task_serializer = "json"
 accept_content = ["json"]

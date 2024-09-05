@@ -1,39 +1,57 @@
-version: '3.8'
-
 services:
+  beat:
+    build:
+      context: .
+      dockerfile: ./docker/beat.Dockerfile
+    volumes:
+      - ./app:/app/
+    environment:
+      REDIS_URL: redis
+      RABBITMQ_URL: rabbitmq
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    depends_on:
+      - rabbitmq
+      - redis
+    networks:
+      - app-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: ./docker/worker.Dockerfile
+    volumes:
+      - ./app:/app/
+    environment:
+      REDIS_URL: redis
+      RABBITMQ_URL: rabbitmq
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    depends_on:
+      - rabbitmq
+      - redis
+    networks:
+      - app-network
+
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: webinars-rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: 1234qwer!
-    volumes:
-      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app-network
 
-  celery-worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: celery-worker
-    command: 
-      scripts/wait-for-it.sh rabbitmq:5672 -- celery -A run worker -Q webinars-beat,webinars --loglevel=info --logfile=./logs/celery_worker.log
-    volumes:
-      - .:/app
-    depends_on:
-      - rabbitmq
-    
-  celery-beat:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: celery-worker
-    command: 
-      scripts/wait-for-it.sh rabbitmq:5672 -- celery -A run beat --loglevel=info --logfile=./logs/celery_beat.log
-    volumes:
-      - .:/app
-    depends_on:
-      - rabbitmq
-      - celery-worker
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
