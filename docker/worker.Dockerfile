@@ -12,7 +12,8 @@ COPY run.py /worker/
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
+COPY ./.temp/ /worker/.temp/
 COPY ./app/ /worker/app/
 RUN mkdir -p /worker/logs /worker/.temp
 
-CMD ["celery", "-A", "run", "worker", "-Q", "test-queue,beat-queue", "--hostname", "worker@%h", "-c", "4", "--loglevel=info"]
+CMD ["celery", "-A", "run", "worker", "-Q", "webinars-beat,webinars", "--hostname", "worker@%h", "-c", "4", "--loglevel=info"]
