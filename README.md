@@ -151,3 +151,9 @@ consumer_timeout = 10800000
     volumes:
       - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
 ```
+
+## docker-compose
+
+```bash
+$ docker-compose up --build
+```
