@@ -5,6 +5,7 @@ services:
       dockerfile: ./docker/beat.Dockerfile
     volumes:
       - ./app:/app/
+      - .env:/app/.env
     environment:
       REDIS_URL: redis
       RABBITMQ_URL: rabbitmq
@@ -22,6 +23,7 @@ services:
       dockerfile: ./docker/worker.Dockerfile
     volumes:
       - ./app:/app/
+      - .env:/app/.env
     environment:
       REDIS_URL: redis
       RABBITMQ_URL: rabbitmq

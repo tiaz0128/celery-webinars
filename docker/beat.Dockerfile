@@ -6,7 +6,6 @@ WORKDIR /beat
 RUN pip install poetry
 
 COPY pyproject.toml poetry.lock* /beat/
-COPY .env /beat/
 COPY run.py /beat/
 
 RUN poetry config virtualenvs.create false
